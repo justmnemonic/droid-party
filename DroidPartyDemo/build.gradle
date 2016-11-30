@@ -1,0 +1,37 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+project.buildDir = 'gradleBuild'
+getProject().setBuildDir('gradleBuild')
+
+def cpuType = 'armeabi-v7a'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+task buildNative(type:Exec) {
+    workingDir '/Users/kuznetsov-v/Desktop/DroidParty/tensorflow'
+    commandLine 'bazel', 'build', '-c', 'opt', \
+      '//Users/kuznetsov-v/Desktop/DroidParty/DroidPartyDemo:tensorflow_native_libs', \
+       '--crosstool_top=//external:android/crosstool', \
+       '--cpu=' + cpuType, \
+       '--host_crosstool_top=@bazel_tools//tools/cpp:toolchain'
+}
